@@ -27,6 +27,7 @@ local functions = {
    {name = "run", module = "stages.detect_empty_blocks"},
    {name = "run", module = "stages.detect_empty_statements"},
    {name = "run", module = "stages.detect_globals"},
+   {name = "run", module = "stages.detect_prohibited"},
    {name = "run", module = "stages.detect_reversed_fornum_loops"},
    {name = "run", module = "stages.detect_unbalanced_assignments"},
    {name = "run", module = "stages.detect_uninit_accesses"},

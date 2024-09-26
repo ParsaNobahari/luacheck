@@ -21,6 +21,7 @@ stages.names = {
    "detect_empty_blocks",
    "detect_empty_statements",
    "detect_globals",
+   "detect_prohibited",
    "detect_reversed_fornum_loops",
    "detect_unbalanced_assignments",
    "detect_uninit_accesses",

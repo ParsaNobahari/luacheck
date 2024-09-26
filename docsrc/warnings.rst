@@ -23,6 +23,7 @@ Code Description
 212  Unused argument.
 213  Unused loop variable.
 214  Used variable.
+215  Used prohibited variable name.
 221  Local variable is accessed but never set.
 231  Local variable is set but never accessed.
 232  An argument is set but never accessed.
