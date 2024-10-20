@@ -1,10 +1,10 @@
 local vars = {}
 local stage = {}
-local handle_node
-local prohibited_vars = {"pass", "ass", "ss"}
+-- local reserved_keywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "goto", "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true", "until", "while", "assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs", "load", "loadfile", "next", "pairs", "pcall", "print", "rawequal", "rawget", "rawlen", "rawset", "require", "select", "setmetatable", "tonumber", "tostring", "type" }
+local prohibited_vars = { "pass" }
 
 stage.warnings = {
-    ["215"] = {message_format = "prohibited name detected {name}", fields = {"name"}},
+    ["215"] = {message_format = "prohibited variable name detected {name}", fields = {"name"}},
 }
 
 local function detect_prohibited(chstate, nodes, word)
@@ -29,39 +29,33 @@ local function detect_prohibited(chstate, nodes, word)
    return items
 end
 
-local function check_nodes(chstate, nodes)
+local function check_nodes(nodes)
    for _, node in ipairs(nodes) do
       if type(node) == "table" then
-         handle_node(chstate, node)
-      end
-   end
-end
-
-function handle_node(chstate, node)
-   if node.tag == "Id" then
-      if #vars == 0 then
-         table.insert(vars, node[1])
-      else
-         local bool = false
-         for i in ipairs(vars) do
-            if vars[i] == node[1] then
-               bool = true
+         if node.tag == "Id" then
+            if next(vars) == nil then
+               table.insert(vars, node[1])
+            else
+               local var_name_is_new = true
+               for i in ipairs(vars) do
+                  if vars[i] == node[1] then
+                     var_name_is_new = false
+                  end
+               end
+               if var_name_is_new == true then
+                  table.insert(vars, node[1])
+               end
             end
-         end
-         if bool == false then
-            table.insert(vars, node[1])
+         else
+            check_nodes(node)
          end
       end
-   else
-      check_nodes(chstate, node)
    end
 end
 
 function stage.run(chstate)
-   check_nodes(chstate, chstate.ast)
+   check_nodes(chstate.ast)
    detect_prohibited(chstate, chstate.ast, prohibited_vars)
 end
 
 return stage
-
-
